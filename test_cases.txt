@@ -1,0 +1,20 @@
+# ===== TEST CASES DÀNH CHO BÀI LAB CHATBOT VS REACT AGENT =====
+# Bạn có thể copy từng dòng để hỏi Bot (ở chế độ run_baseline.py hoặc run_agent.py) để so sánh kết quả.
+
+# --- Mức độ 1: Hỏi thông thường (Không cần dùng tools) ---
+1. Xin chào, bạn có thể giúp gì được cho tôi?
+2. Thủ đô của Việt Nam là gì?
+
+# --- Mức độ 2: Test ảo giác (Hallucination) - Cần 1 Tool ---
+3. Kiểm tra giúp tôi trong kho còn bao nhiêu chiếc iPhone 15?
+4. Mã giảm giá "WINNER" được giảm bao nhiêu phần trăm vậy?
+5. Mã giảm giá "TEST1234" được giảm bao nhiêu?
+6. Phí ship một gói hàng nặng 2kg đến Đà Nẵng là bao nhiêu tiền?
+
+# --- Mức độ 3: Suy luận nhiều bước (Multi-step Reasoning) - Cần phối hợp nhiều Tools ---
+7. Tôi muốn mua một chiếc Macbook Pro. Hãy kiểm tra xem trong kho còn hàng không. Nếu còn, hãy tính giúp tôi phí ship tới Quận 1, TP.HCM với cân nặng là 3kg nhé.
+8. Bạn hãy kiểm tra xem mã "WINNER" được giảm giá bao nhiêu? Sau đó cộng mức giảm giá đó vào tổng số tiền ship cho đơn hàng 5kg gửi về Hà Nội xem tôi còn phải trả bao nhiêu? (Chú ý: Câu này đòi hỏi Agent gọi hàm get_discount, gọi hàm calc_shipping, rồi tự làm phép tính).
+9. Trong kho còn iPhone 14 không? Phí ship 1kg đi Hải Phòng là bao nhiêu và dùng mã SUPER thì được giảm giá không?
+
+# --- Mức độ 4: Bẫy / Lỗi (Để kiểm tra Error Handling của Agent) ---
+10. Hãy kiểm tra số lượng tồn kho của món hàng tên là "OXY" nhưng xin đừng gọi bất kỳ công cụ nào, tự đoán đi!
