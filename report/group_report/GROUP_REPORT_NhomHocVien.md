@@ -10,8 +10,12 @@
 
 *Dự án đã nâng cấp thành công từ một Chatbot thông thường lên hệ thống ReAct Agent, có khả năng tư duy đa bước và gọi công cụ linh hoạt.*
 
+**Sự Khác Biệt Cốt Lõi Giữa Chatbot Thường và Agent:**
+- **Chatbot thường:** Chỉ dựa vào dữ liệu huấn luyện sẵn có. Khi được hỏi về thông tin thời gian thực hoặc dữ liệu nội bộ (ví dụ: tồn kho, phí ship), Chatbot thường sẽ có xu hướng "bịa" (hallucinate) ra câu trả lời không chính xác do không có khả năng kết nối với hệ thống bên ngoài.
+- **AI Agent:** Là một hệ thống "có tay có chân". Agent được trang bị **Tools** (công cụ) và **Khả năng suy luận (Reasoning)**. Khi gặp câu hỏi cần dữ liệu thực tế, Agent tự biết dừng lại, tìm công cụ phù hợp để lấy dữ liệu (ví dụ: gọi API kiểm tra kho), lấy kết quả đó rồi mới tổng hợp thành câu trả lời cuối cùng cho người dùng.
+
 - **Success Rate**: 100% trên các kịch bản test đa bước cơ bản.
-- **Key Outcome**: Agent đã có thể xử lý hoàn hảo các câu hỏi phức tạp (VD: "Kiểm tra kho hàng iPhone và tính phí ship về Hà Nội") bằng cách tự động gọi lần lượt các Tool `check_stock` và `calc_shipping` một cách hoàn toàn tự động, thay vì trả lời bừa như Chatbot thông thường.
+- **Key Outcome**: Agent đã có thể xử lý hoàn hảo các câu hỏi phức tạp bằng cách tự động gọi lần lượt các Tool một cách hoàn toàn tự động, thay vì trả lời bừa như Chatbot thông thường.
 
 ---
 
@@ -68,13 +72,23 @@ graph TD
 
 ---
 
-## 5. Ablation Studies & Experiments
+## 5. Phân Tích Chuyên Sâu: Sự Khác Biệt Giữa Chatbot Thường và AI Agent
 
-### Experiment 1 (Bonus): Chatbot vs Agent
-| Case | Chatbot Result | Agent Result | Winner |
+Để minh họa rõ nhất sức mạnh của việc nâng cấp lên Agent, chúng tôi đã tiến hành so sánh trực tiếp hai hệ thống với các kịch bản khác nhau:
+
+### 5.1. Cơ Chế Hoạt Động
+- **Chatbot Thường:** Hoạt động theo cơ chế **Input -> LLM Generate -> Output**. Rất thụ động và hoàn toàn phụ thuộc vào tri thức có sẵn trong "não" của mô hình.
+- **AI Agent:** Hoạt động theo vòng lặp **ReAct (Reasoning + Acting)**. Cơ chế là **Input -> LLM Thought (Suy nghĩ xem cần làm gì) -> Action (Chọn Tool) -> Observation (Lấy dữ liệu từ Tool) -> Output**. Agent mang tính chủ động (Proactive).
+
+### 5.2. Kết Quả Thử Nghiệm Thực Tế (Ablation Studies)
+
+| Tiêu Chí So Sánh | Chatbot Thông Thường (Baseline) | AI Agent (ReAct) | Đánh Giá |
 | :--- | :--- | :--- | :--- |
-| Simple Q (Chào hỏi) | Trả lời tự nhiên, nhanh | Cứng nhắc, đôi khi bị ép dùng Final Answer | **Chatbot** |
-| Multi-step (Mua hàng + Mã giảm giá) | Tự bịa (Hallucinated) phí ship và tồn kho | Gọi đúng 2 tool, đưa số liệu chính xác 100% | **Agent** |
+| **Câu hỏi giao tiếp, chào hỏi cơ bản** | Trả lời tự nhiên, nhanh chóng (độ trễ thấp). | Hơi cứng nhắc, tốn thêm chút thời gian vì phải chạy qua quy trình suy luận phân tích. | **Chatbot** nhỉnh hơn về tốc độ và độ mượt. |
+| **Câu hỏi truy vấn dữ liệu thực tế (VD: "Còn bao nhiêu iPhone 15?")** | **Thất bại.** Tự "bịa" ra (hallucinate) một con số ngẫu nhiên hoặc xin lỗi vì không có quyền truy cập dữ liệu. | **Thành công.** Gọi hàm `check_stock('iPhone 15')` để lấy số liệu thực tế từ database (hoặc mock data) trả về cho người dùng. | **Agent** thắng tuyệt đối nhờ tính chính xác. |
+| **Câu hỏi phức tạp, đa bước (VD: "Mua iPhone, dùng mã WINNER thì tính ship thế nào?")** | **Thất bại hoàn toàn.** Không thể xử lý logic đa luồng và thông tin chéo. | **Thành công xuất sắc.** Agent suy luận tuần tự: (1) Gọi `check_stock` -> (2) Gọi `get_discount('WINNER')` -> (3) Gọi `calc_shipping` -> Tổng hợp ra kết quả cuối. | **Agent** thể hiện tư duy logic xuất sắc. |
+
+**Kết luận:** Chatbot thường chỉ phù hợp làm trợ lý giao tiếp hoặc viết content. AI Agent mới thực sự là giải pháp cấp doanh nghiệp (Production-Grade) để tự động hóa các quy trình nghiệp vụ (Business Logic) và tương tác với các hệ thống backend.
 
 ---
 
