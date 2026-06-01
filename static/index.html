@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReAct Agent UI</title>
+    <!-- Use a modern Google font -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600&display=swap" rel="stylesheet">
+    <!-- Include Phosphor Icons for modern iconography -->
+    <script src="https://unpkg.com/@phosphor-icons/web"></script>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+    <div class="background-blobs">
+        <div class="blob blob-1"></div>
+        <div class="blob blob-2"></div>
+    </div>
+    
+    <div class="app-container">
+        <header class="app-header">
+            <div class="header-title">
+                <i class="ph ph-robot"></i>
+                <h1>ReAct Agent</h1>
+            </div>
+            <div class="status-indicator">
+                <span class="status-dot online"></span>
+                <span class="status-text">Online</span>
+            </div>
+        </header>
+        
+        <div class="chat-container" id="chat-container">
+            <div class="message system-message">
+                <div class="avatar"><i class="ph ph-cpu"></i></div>
+                <div class="message-content">
+                    <p>Hello! I am your ReAct AI Agent. How can I help you today?</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="input-area">
+            <form id="chat-form">
+                <input type="text" id="user-input" placeholder="Type your message..." autocomplete="off" required>
+                <button type="submit" id="send-btn" aria-label="Send message">
+                    <i class="ph-fill ph-paper-plane-right"></i>
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <script src="/script.js"></script>
+</body>
+</html>
