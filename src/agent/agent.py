@@ -49,35 +49,42 @@ class ReActAgent:
         steps = 0
 
         while steps < self.max_steps:
-            # TODO: Generate LLM response
+            # Generate LLM response
             response = self.llm.generate(current_prompt, system_prompt=self.get_system_prompt())
             result = response.get("content", "")
             
             logger.log_event("AGENT_STEP", {"step": steps, "response": result})
             
-            # TODO: If Final Answer found -> Break loop
+            print(f"\n[Bước {steps + 1}]")
+            print(result.strip())
+            
+            # If Final Answer found -> Break loop
             final_answer_match = re.search(r"Final Answer:\s*(.*)", result, re.DOTALL)
             if final_answer_match:
                 final_answer = final_answer_match.group(1).strip()
                 logger.log_event("AGENT_END", {"steps": steps + 1, "status": "success", "answer": final_answer})
                 return final_answer
             
-            # TODO: Parse Thought/Action from result
+            # Parse Thought/Action from result
             action_match = re.search(r"Action:\s*(\w+)\((.*?)\)", result)
             
-            # TODO: If Action found -> Call tool -> Append Observation
+            # If Action found -> Call tool -> Append Observation
             if action_match:
                 tool_name = action_match.group(1)
                 tool_args = action_match.group(2)
                 
                 observation = self._execute_tool(tool_name, tool_args)
+                print(f"Observation: {observation}")
                 
                 # Append to prompt for next iteration
                 current_prompt += f"\n{result}\nObservation: {observation}\n"
                 logger.log_event("AGENT_ACTION", {"tool": tool_name, "args": tool_args, "observation": observation})
             else:
-                # If LLM didn't output Action or Final Answer correctly
-                current_prompt += f"\n{result}\nObservation: Error - Could not parse Action or Final Answer. Please use the correct format.\n"
+                # Nếu LLM không xuất ra format Action hay Final Answer (VD: đang tán gẫu)
+                # Thay vì báo lỗi và lặp vô hạn, ta lấy luôn câu nói đó làm Final Answer
+                fallback_answer = result.strip()
+                logger.log_event("AGENT_END", {"steps": steps + 1, "status": "success_fallback", "answer": fallback_answer})
+                return fallback_answer
             
             steps += 1
             
