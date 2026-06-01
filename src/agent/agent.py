@@ -34,6 +34,8 @@ class ReActAgent:
         Observation: result of the tool call.
         ... (repeat Thought/Action/Observation if needed)
         Final Answer: your final response.
+        
+        QUAN TRỌNG: Ngay cả khi bạn chỉ muốn giao tiếp thông thường, chào hỏi, hoặc hỏi thêm thông tin từ người dùng, BẠN BẮT BUỘC phải bắt đầu câu trả lời cuối cùng bằng 'Final Answer:'. KHÔNG ĐƯỢC trả lời trống không.
         """
 
     def run(self, user_input: str) -> str:
