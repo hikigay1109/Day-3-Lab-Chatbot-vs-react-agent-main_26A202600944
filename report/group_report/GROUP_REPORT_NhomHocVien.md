@@ -23,6 +23,19 @@ Chúng tôi đã cài đặt vòng lặp **Thought-Action-Observation** bên tro
 - **Action**: Dùng Regex trích xuất tên hàm và tham số.
 - **Observation**: Gọi hàm bằng cơ chế gọi động (dynamic function calling) thông qua `eval()` hoặc string-passing, sau đó gắn kết quả trả về vào ngữ cảnh cho bước suy luận tiếp theo.
 
+**Sơ đồ khối (Flowchart) mô tả ReAct Loop:**
+```mermaid
+graph TD
+    A([User Input]) --> B[LLM Suy luận - Thought]
+    B --> C{Có cần gọi Tool?}
+    C -->|Có| D[Action: Trích xuất tên hàm & tham số]
+    D --> E[Gọi Tool]
+    E --> F[Observation: Kết quả trả về]
+    F -->|Nạp vào Prompt| B
+    C -->|Không| G[Trích xuất Final Answer]
+    G --> H([Trả kết quả cho User])
+```
+
 ### 2.2 Tool Definitions (Inventory)
 | Tool Name | Input Format | Use Case |
 | :--- | :--- | :--- |
